@@ -5,8 +5,7 @@ from torchvision import datasets, transforms, models
 from torch.utils.data import DataLoader
 from torch import optim
 
-from my_models import ViT, CrossViT   # rename the skeleton file for your implementation / comment before testing for ResNet
-
+from my_models import ViT, CrossViT  
 
 def parse_args():
     parser = argparse.ArgumentParser(description='Train a neural network to classify CIFAR10')
@@ -46,8 +45,8 @@ def test(model, device, test_loader, criterion, set="Test"):
         for data, target in test_loader:
             data, target = data.to(device), target.to(device)
             output = model(data)
-            test_loss += criterion(output, target).item()  # sum up batch loss
-            pred = output.argmax(dim=1, keepdim=True)  # get the index of the max log-probability
+            test_loss += criterion(output, target).item()  # sums up batch loss
+            pred = output.argmax(dim=1, keepdim=True)  # gets the index of the max log-probability
             correct += pred.eq(target.view_as(pred)).sum().item()
 
     test_loss /= len(test_loader.dataset)
@@ -64,7 +63,7 @@ def run(args):
 									transforms.Normalize(mean=(0.485, 0.456, 0.406), std=(0.229, 0.224, 0.225))
                                     ])
 
-    # TODO: adjust folder
+    # adjusting folder
     dataset = datasets.CIFAR10('C:/Users/Ritwik/Downloads/cifar-10-python/cifar-10-batches-py/', download=False, train=True, transform=transform)
     trainset, valset = torch.utils.data.random_split(dataset, [int(len(dataset)*0.9), len(dataset)-int(len(dataset)*0.9)])
     trainloader = DataLoader(trainset, batch_size=64, shuffle=True)
@@ -72,11 +71,11 @@ def run(args):
 
 
     # Download and load the test data
-    # TODO: adjust folder
+    # adjusting folder
     testset = datasets.CIFAR10('C:/Users/Ritwik/Downloads/cifar-10-python/cifar-10-batches-py/', download=False, train=True, transform=transform)
     testloader = DataLoader(testset, batch_size=64, shuffle=True)
 
-    # Build a feed-forward network
+    # Building a feed-forward network
     print(f"Using {args.model}")
     if args.model == "r18":
         model = models.resnet18(pretrained=False)
@@ -95,7 +94,7 @@ def run(args):
                          cross_attn_dim_head = 64, depth = 3, dropout = 0.1,
                          emb_dropout = 0.1)
 
-    # Define the loss
+    # Defining the loss
     criterion = nn.CrossEntropyLoss(reduction="sum")
     if torch.cuda.is_available():
         device = torch.device("cuda")
