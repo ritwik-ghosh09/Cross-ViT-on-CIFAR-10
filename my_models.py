@@ -44,7 +44,7 @@ class Attention(nn.Module):
     def __init__(self, dim, heads = 8, dim_head = 64, dropout = 0.):
         super().__init__()
         # set heads and scale (=sqrt(dim_head))
-        # TODO
+        
         self.dim = dim
         self.dim_head = dim_head
         self.heads = heads
@@ -56,20 +56,20 @@ class Attention(nn.Module):
         self.attn_drop = nn.Dropout(dropout)
 
         # as well as the q linear layer
-        # TODO
+       
 
         # and the k/v linear layer (can be realized as one single linear layer
         # or as two individual ones)
-        # TODO
+       
 
         # and the output linear layer followed by dropout
-        # TODO
+        
 
         self.out_linear_layer = nn.Sequential(nn.Linear(dim_head * heads, dim),
                                               nn.Dropout(dropout))      # 16,17,512 -> 16, 17, 64
 
         # we need softmax layer and dropout
-        # TODO
+        
         self.attn_drop = nn.Dropout(dropout)
 
 
@@ -87,7 +87,7 @@ class Attention(nn.Module):
             # cross attention requires CLS token to be included itself as key / value and only that CLS token as query
             context = torch.cat((x, context), dim = 1) 
         
-        # TODO: attention
+        # Attention
 
         q= self.wq(x).reshape(b, n, self.heads, self.dim).permute(0, 2, 1, 3)    # 16, 17, 512 -> 16, 17, 8, 64 -> 16, 8, 17, 64
         k= self.wk(context).reshape(b, n, self.heads, self.dim).permute(0, 2, 1, 3) # provision for cross ViT
@@ -149,7 +149,7 @@ class ProjectInOut(nn.Module):
             - after calling fn, the tensor has to be projected back into it's original shape   
             - fn(W_in) * W_out
         """
-        # TODO
+        
 
         x = self.project_out(self.fn(self.project_in(x))+x)
 
@@ -164,7 +164,7 @@ class CrossTransformer(nn.Module):
         self.depth = depth
         self.layers = nn.ModuleList([])
 
-        # TODO: create # depth encoders using ProjectInOut
+        # create # depth encoders using ProjectInOut
         for _ in range(depth):
             self.layers.append(nn.ModuleList([ProjectInOut(sm_dim, lg_dim, Attention(lg_dim, heads, dim_head, dropout)),
                                               ProjectInOut(lg_dim, sm_dim, Attention(sm_dim, heads, dim_head, dropout)),
@@ -182,7 +182,7 @@ class CrossTransformer(nn.Module):
             lg_cls = lg_sm(lg_cls, sm_patch_tokens)     # 2. large cls token to small patches
 
 
-        # TODO
+        
         sm_tokens = torch.cat((sm_cls, sm_patch_tokens), dim=-1)  # finally concat sm/lg cls tokens with patch tokens
         lg_tokens = torch.cat((lg_cls,lg_patch_tokens), dim=-1)
 
@@ -249,7 +249,7 @@ class ImageEmbedder(nn.Module):
         patch_height, patch_width = pair(patch_size)
 
         # create layer that re-arranges the image patches
-        # and embeds them with layer norm + linear projection + layer norm # TODO
+        # and embeds them with layer norm + linear projection + layer norm 
         self.to_patch_embedding = nn.Sequential(
             Rearrange('b c (h p1) (w p2) -> b (h w) (p1 p2 c)', p1=patch_height, p2=patch_width),
             nn.LayerNorm(patch_dim),
@@ -257,9 +257,9 @@ class ImageEmbedder(nn.Module):
             nn.LayerNorm(dim)
         )
         # create/initialize #dim-dimensional positional embedding (will be learned)
-        self.pos_embedding = nn.Parameter(torch.randn(1, num_patches + 1, dim))     # TODO
+        self.pos_embedding = nn.Parameter(torch.randn(1, num_patches + 1, dim))     
         # create #dim cls tokens (for each patch embedding)
-        self.cls_token = nn.Parameter(torch.randn(1, 1, dim))   # TODO
+        self.cls_token = nn.Parameter(torch.randn(1, 1, dim))   
         # create dropput layer
         self.dropout = nn.Dropout(dropout)
 
