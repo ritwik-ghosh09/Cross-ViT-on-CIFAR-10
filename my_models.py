@@ -74,9 +74,9 @@ class Attention(nn.Module):
 
 
     def forward(self, x, context = None, kv_include_self = False):
-        # now compute the attention/cross-attention
+        # Compute the attention/cross-attention
         # in cross attention: x = class token, context = token embeddings
-        # don't forget the dropout after the attention 
+        # Not to forget the dropout after the attention 
         # and before the multiplication w. 'v'
         # the output should be in the shape 'b n (h d)'
         b, n, _, h = *x.shape, self.heads
