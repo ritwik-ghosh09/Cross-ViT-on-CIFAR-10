@@ -396,14 +396,14 @@ class CrossViT(nn.Module):
 
     def forward(self, img):
         # apply image embedders
-        sm_tokens = self.sm_img_token(img)     # TODO
+        sm_tokens = self.sm_img_token(img)     
         lg_tokens = self.lg_img_token(img)
 
         # and the multi-scale encoder
-        sm_token, lg_token = self.multi_scale_encoder(sm_tokens, lg_tokens) # TODO
+        sm_token, lg_token = self.multi_scale_encoder(sm_tokens, lg_tokens) 
 
         # call the mlp heads w. the class tokens 
-        sm_logits = self.sm_mlp_head(sm_token)  # TODO
+        sm_logits = self.sm_mlp_head(sm_token)  
         lg_logits = self.lg_mlp_head(lg_token)
         
         return sm_logits + lg_logits
